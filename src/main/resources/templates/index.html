@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>小何之家</title>
+    <link rel="stylesheet" type="text/css"  href="https://cdn.staticfile.org/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" type="text/css" href="/css/table.css">
+    <script type="text/javascript" src="/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascrip" src="/js/jquery.min.js"></script>
+    <script type="text/javascrip" src="/js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/js/intputHomeBirthday.js"></script>
+    <script type="text/javascript" src="/js/My97DatePicker/WdatePicker.js"></script>
+</head>
+<style>
+    .navbarDiv{
+        width: 1335px
+    }
+    #drawing {
+        width: 1333px;
+        height: 555px;
+
+        /*border:1px solid;*/
+        position: relative;
+    }
+
+    .circle {
+      /*  background-color: green;*/
+        background-color: #666666;
+        borderColor:  #666666;
+        position: absolute;
+    }
+</style>
+<script>
+    $(document).ready(function(){
+        init();
+    });
+    function init(){
+        var child ="";
+        $.ajax({
+            type: "POST",
+            url: "/getAlllBirthDay" ,
+            data: "",
+            dataType: "json",
+            success: function (result) {
+                console.log(result.data);
+                //取出后端传过来的list值
+                var chargeRuleLogs = result.data;
+                $.each(chargeRuleLogs, function (index, n) {
+                    child =child +"<tr class='tr'>"+
+                            "<td align='center'><a href='#'><i style='color: red' class='icon ion-minus-round' onclick='delOperat("+n.id+")'></i></a></td>"
+                            +" <td> <input type='hidden'   name='ids' value="+n.id+" class='input_txt w99' ><input type='text' name='name' value="+chargeRuleLogs[index].name+" style='width: 90%' class='input_txt w99'></td>"
+                            + "<td><input type='text'  required name='oldBirthDay' value="+n.oldBirthday+" style='width: 90%' class='input_txt w99'></td>"
+                            + "<td><input type='text' required name='newBirthDay' value="+n.birthday+" onclick=WdatePicker({dateFmt:'yyyy-MM-dd'}) style='width: 90%' class='input_txt w99'></td>"
+                            + "<td> <input type='text' required name='phoneNumber' value="+n.phoneNumber+" style='width: 90%' class='input_txt w99'></td>"
+                            + "<td> <input type='text' required name='wxOpenId' value="+n.wxOpenId+" style='width: 90%' class='input_txt w99'></td>"
+                            + "<td><input type='hidden' name='seqs' value="+n.seq+" class='input_txt w99'><a onclick='moveUp(this)'><i style='color: blue;margin-left: 40%' class='icon ion-arrow-up-c'></i></a><a onclick='moveDown(this)'><i style='color: blue;margin-left: 10%' class='icon ion-arrow-down-c'></i></a></td></tr>";
+                });
+                //将信息追加
+                $("#mainTable").append(child);
+            },
+            error : function(data,type, err) {
+                alert("异常！");
+                console.log(err);
+            }
+        });
+    }
+
+</script>
+<body style="margin: 4px 0px 0px 14px;font-size: 12px;">
+<div class="navbarDiv">
+    <ul>
+        <li><a class="active" href="/index">生日推送</a></li>
+        <li><a href="/wxPushImport">微信通知</a></li>
+        <li><a href="/emailPushImport">邮件通知</a></li>
+        <li style="width: 338px"><a href="/pushStatistics">通知统计</a></li>
+    </ul>
+</div>
+
+<div id="drawing">
+    <!--短信剩余量提醒-->
+    <!--<div class="circle" style="width: 150px; height: 150px; border-radius: 80px; left:100px; top: 50px;">
+        <div style="margin-left:38px;margin-top: 30px">
+            <span style="color: white;font-size: 20px">短信剩余</span>
+        </div>
+
+          <div style="margin-top: 25px;margin-left: 60px">
+               <span style="color: white;font-size: 25px">6</span>
+           </div>
+    </div>-->
+
+    <!--录入部分-->
+    <div style="width: 1335px;height: 554px;">
+        <form action="/saveBatchHomeBirthDay" method="post">
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" id="listTable" class="list_table" style="margin-top: 4px">
+            <tbody id="mainTable">
+            <tr>
+                <th width="6%"><a href="javascript:addOperation()"><i style="color: green"  class="icon ion-plus-round"></i></a></th>
+                <th width="12%">名字</th>
+                <th width="12%">农历生日</th>
+                <th width="12%">新历生日</th>
+                <th width="13%">手机号码</th>
+                <th width="16%">微信openId</th>
+                <th width="10%">显示顺序</th>
+            </tr>
+           <!-- <tr class="tr">
+               <td align="center"><a href="#"><i style="color: red" class="icon ion-minus-round" onclick="delOperat(this.${item.id})"></i></a></td>
+                <td> <input type="hidden"  name="ids" value="${item.id }" class="input_txt w99" ><input type="text"  name="name" value="2222" style="width: 90%" class="input_txt w99"></td>
+                <td><input type="text"  name="oldBirthDay" value="2222" style="width: 90%" class="input_txt w99" ></td>
+                <td><input type="text"  name="newBirthDay" value="" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" style="width: 90%" class="input_txt w99" ></td>
+                <td> <input type="text"  name="phoneNumber" value="2222" style="width: 90%" class="input_txt w99" ></td>
+                <td><input type="hidden"  name="seqs" value="${item.seq }" class="input_txt w99" ><a onclick="moveUp(this)"><i style="color: blue;margin-left: 40%" class='icon ion-arrow-up-c'></i></a><a onclick="moveDown(this)"><i style="color: blue;margin-left: 10%" class='icon ion-arrow-down-c'></i></a></td>
+            </tr>-->
+
+            </tbody>
+        </table>
+
+        <div style="display: none;" id="nextNodeIdDiv">
+            <input type="text"  name="newBirthDay" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" value="" style="width: 90%" class="input_txt w99" >
+        </div>
+
+
+        <div class="btn_div">
+            <!--<input type="button"  onclick="preStep()" class="btn btn82 btn_save2" style="padding-left: 25px;" value="上一步">-->
+            <input id="submitBtn" type="submit" class="btn btn82 btn_save2"  value="保存">
+            <!-- <input type="button" name="button" onclick="nextStep()" class="btn btn82 btn_nochecked" style="padding-left: 25px;" value="下一步">-->
+        </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
+

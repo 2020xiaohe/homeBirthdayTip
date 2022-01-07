@@ -1,0 +1,122 @@
+/* label{
+  !important;
+      line-height: 1;
+  } */
+  
+*{
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
+}
+a{
+	text-decoration: none;
+}
+
+
+/* 面板 */
+
+.reset_from{
+	width: 600px;
+	border: 3px solid #08A6F0;
+	margin: 120px auto;
+}
+
+.reset_from p{
+	width: 18%;
+	display: inline-block;
+	font-size: 18px;
+	text-align: center;
+	line-height: 50px;
+}
+
+.C{
+	width: 76%;
+    height: 48px;
+    padding: 10px;
+    font-size: 16px;
+    line-height: 25px;
+    color: #495057;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+	margin: 10px;
+}
+
+.reset_from span{
+	width: 96%;
+	font-size: 16px;
+	line-height: 30px;
+	display: inline-block;
+	text-align: right;
+}
+
+.from_text{
+	width: 200px;
+	height: 48px;
+	padding: 10px;
+	font-size: 16px;
+	line-height: 25px;
+	color: #495057;
+	background-color: #fff;
+	border: 1px solid #ced4da;
+	border-radius: 5px;
+	margin: 10px;
+}
+
+.from_bottom{
+	width: 240px;
+	height: 50px;
+	display: inline-block;
+	font-size: 18px;
+	line-height: 50px;
+	color: white;
+	border: 0;
+	border-radius: 5px;
+	background-color: #08a6f0;
+	cursor: pointer;
+}
+
+.from_btn{
+	width: 200px;
+	height: 50px;
+	display: block;
+	font-size: 18px;
+	line-height: 50px;
+	color: white;
+	border: 0;
+	border-radius: 5px;
+	background-color: #08a6f0;
+	cursor: pointer;
+	margin: 5px auto;
+}
+
+/* 验证按钮 */
+.check_style{
+	width: 90%;
+    height: 50px;
+    display: block;
+    text-align: center;
+    line-height: 46.8px;
+    font-size: 16px;
+    color: #252525;
+    background-color: #FFFFFF;
+    border: 2px solid #DDDDDD;
+    cursor: pointer;
+}
+.check_style:hover{
+	color: #08A6F0;
+	border-color: #08A6F0;
+}
+
+.foget_id{
+	width: 100%;
+	text-align: center;
+}
+.foget_id p{
+	width: 20%;
+}
+.foget_id h1{
+	font-size: 16px;
+	line-height: 30px;
+	display: inline-block;
+}

@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>小何之家</title>
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" type="text/css" href="css/table.css">
+    <link rel="stylesheet" type="text/css" href="css/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="css/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="css/demo/demo.css">
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="js/easyUILanguage/locale/easyui-lang-zh_CN.js"></script>
+</head>
+<style>
+    .navbarDiv{
+        width: 1335px
+    }
+    #drawing {
+        width: 1333px;
+        height: 601px;
+       /* border:1px solid;*/
+        position: relative;
+    }
+
+    a{
+        text-decoration:none;
+    }
+    .abutton{
+        border:1px solid #d0d6f8;
+        height:30px;
+        line-height:30px;
+        padding-left:35px;
+        padding-right:10px;
+        display:inline-block;
+        color:#000000;
+    }
+    .fitem{
+        margin-left: 30%;
+        margin-top: 3%;
+    }
+    .abutton:hover{
+        border:1px solid #198eb7;
+        height:30px;
+        line-height:30px;
+        padding-left:35px;
+        padding-right:10px;
+        display:inline-block;
+        color:#527fa3;
+    }
+
+    /*下载模板样式*/
+    .add_infor{
+        border-left:1px solid #d2d2d2;
+        border-top:1px solid #d2d2d2;
+        font-size:12px;
+    }
+    .add_infor td{
+        height:32px;
+        line-height:32px;
+        border-right:1px solid #d2d2d2;
+        border-left:1px solid #d2d2d2;
+        border-top:1px solid #d2d2d2;
+        border-bottom:1px solid #d2d2d2;
+        vertical-align:middle;
+        padding:5px;
+    }
+    .t_txt{ width:18%; background-color:#E6F1F4; font-weight:bold; text-align:right;}
+    .t_con{
+        width:32%;
+        padding-left:5px;
+    }
+
+    .datagrid-cell, .datagrid-cell-group, .datagrid-header-rownumber, .datagrid-cell-rownumber
+    {
+        text-overflow: ellipsis;
+    }
+
+</style>
+<body style="margin: 4px 0px 0px 14px;">
+<div class="navbarDiv">
+    <ul>
+        <li><a  href="/index">生日推送</a></li>
+        <li><a class="active" href="/wxPushImport">微信通知</a></li>
+        <li><a href="/emailPushImport">邮件通知</a></li>
+        <li style="width: 338px"><a href="/pushStatistics">通知统计</a></li>
+    </ul>
+</div>
+
+<div id="drawing" style="margin-top: 4px">
+    <!--录入部分-->
+   <!-- <div style="width: 1335px;height: 554px;margin-top: 4px">-->
+        <table id="tt" class="easyui-datagrid" style="width:100%;height:100%;"
+               url="/getAllWaitingWxpushByPage" method="post"
+               toolbar="#toolbar" singleSelect="true" pagination="true" rownumbers="false"  pageSize="14"  pageList="[14,20,30]"
+               title="微信通知管理">
+          <!--  <thead>
+            <tr>
+                <th field="id" hidden="true" width="10%" align="center">ID</th>
+                <th field="wxPushName" width="10%" align="center">姓名</th>
+                <th field="wxPushUserId" width="20%" align="center">微信号</th>
+                <th field="wxPushTemplateId" width="17%" align="center">使用的模板</th>
+                <th field="messageParams" width="55%" align="center">模板中携带的参数(多参数以英文逗号分隔开)</th>
+            </tr>
+            </thead>-->
+        </table>
+        <div id="toolbar">
+            <a href="#" class="abutton"  style="background:   url('/css/themes/icons/search.png') 7px 5px no-repeat;" plain="true" onclick="openCronExecuteTime()">定时器表达式测试</a>
+            <a href="#" class="abutton"  style="background:   url('/images/edit.png') 7px 5px no-repeat;" plain="true" onclick="updateCron()">定时器修改</a>
+            <!--<a href="#" class="abutton"  style="background:   url('./images/imp.png') 7px 5px no-repeat;background-color: #f2f4f5" plain="true" onclick="javascript:void(0);">导入</a>--><!--wxpushImport()-->
+        <!--    <a href="#" class="abutton"  style="float:right;background:   url('/images/edit.png') 7px 5px no-repeat;" plain="true" onclick="javascript:void(0);">修改</a>--><!--editWxpush(2)-->
+            <a href="#" class="abutton"  style="float:right;background:   url('/images/add.png') 7px 5px no-repeat;margin-right: 2%" plain="true" onclick="editWxpush(1)">新增</a>
+            <select style="width: 10%;float:right;margin-right: 10px"  id="type" name="type" class="input_txt w99"  onchange="init()">
+                <option selected value="0">等待发送</option>
+                <option value="1">已经发送</option>
+                <option  value="2">发送异常</option>
+            </select>
+            <label style="float:right;margin-top: 5px;">执行结果：</label>
+
+        </div>
+
+        <div id="dlg-message-buttons">
+            <a href="#" class="easyui-linkbutton" iconCls="icon-save" onclick="saveOrUpdateWxpushTask()">保存</a>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#wxPushAddAndEdit').dialog('close')">取消</a>
+        </div>
+        <!--新增或修改-->
+        <div id="wxPushAddAndEdit" class="easyui-dialog" style="width:500px;height:350px;padding:10px 20px"
+             closed="true" buttons="#dlg-message-buttons">
+            <form id="eme">
+                <input name="id" type="hidden">
+                <div class="fitem" style="margin-left: 13%;">
+                    <i style="color:#FF0000" >*</i> <label>姓名:</label>
+                    <!--<input type="text"  name="wxPushName" class="input_txt w99"  >-->
+                    <select id="wxPushNameSelect"  name="pushAccountName" style="width: 70%" class="input_txt w99"  onchange="getWxPushOpenId()">
+
+                    </select>
+                </div>
+                <div class="fitem" style="margin-left: 11%;">
+                    <i style="color:#FF0000" >*</i><label>微信号:</label>
+                    <input type="text" id="wxPushUserId" style="width: 70%" readonly name="pushAccount" class="input_txt w99">
+                </div>
+                <div class="fitem" style="margin-left: 4%;">
+                    <i style="color:#FF0000" >*</i> <label>使用的模板:</label>
+                    <!--<input type="text"   name="wxPushTemplateId" class="input_txt w99"  >-->
+                    <select style="width: 65%"  name="pushTemplateId" class="input_txt w99" >
+                        <option selected value="0">通知</option>
+                    </select>
+
+                </div>
+                <div class="fitem" style="margin-left: 4%;">
+                    <i style="color:#FF0000" >*</i> <label>模板中参数:</label>
+                    <input type="text"  style="width: 100%" name="pushTemplateParams" class="input_txt w99"  placeholder="例:小明,中国共产党成立100周年庆祝大会,2021年7月1日,北京" ></br>
+                    <label style="color: red;float: right">*多参数以英文逗号分隔开</label>
+                </div>
+            </form>
+        </div>
+
+    <!--定时器表达式执行页面-->
+    <div id="dlg-cron—detail-buttons">
+        <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#getCronExecuteRecently').dialog('close')">取消</a>
+    </div>
+    <div id="getCronExecuteRecently" class="easyui-dialog" style="width:900px;height:500px;padding:10px 20px"
+         closed="true" buttons="#dlg-cron—detail-buttons">
+           <div class="fitem" style="margin-left: 11%;">
+               <i style="color:#FF0000" >*</i><label>定时器表达式:</label>
+               <input type="text"  style="width: 35%"  id="cron" class="input_txt w99"  >
+               <button class="abutton" onclick="getCronExecuteTime()">获取最近9次执行时间</button>
+               <br>
+               <textarea id="executeTime" style="width:555px;height:270px;">
+
+            </textarea>
+           </div>
+    </div>
+
+    <!--定时器修改页面-->
+    <div id="dlg-cron-buttons">
+        <a href="#" class="easyui-linkbutton" iconCls="icon-save" onclick="saveOrUpdateCron()">保存</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#editCron').dialog('close')">取消</a>
+    </div>
+    <!--新增或修改-->
+    <div id="editCron" class="easyui-dialog" style="width:900px;height:500px;padding:10px 20px"
+         closed="true" buttons="#dlg-cron-buttons">
+        <form id="cronForm">
+            <input name="id" type="hidden">
+            <div class="fitem" style="margin-left: 11%;">
+                <i style="color:#FF0000" >*</i><label>日期检查定时器:</label>
+                <input type="text"  style="width: 35%"  id="dataCheckCron" name="dataCheckCron" class="input_txt w99"  >
+                <br>
+                <label style="color: red;margin-left: 40%">*请设置未来某个时间点</label>
+            </div>
+            <div class="fitem" style="margin-left: 11%;">
+                <i style="color:#FF0000" >*</i><label>邮件推送定时器:</label>
+                <input type="text" style="width: 35%"  id="emailPushCron" name="emailPushCron" class="input_txt w99"  >
+                <br>
+                <label style="color: red;margin-left: 40%">*请设置未来某个时间点</label>
+            </div>
+            <div class="fitem" style="margin-left: 11%;">
+                <i style="color:#FF0000" >*</i><label>短信推送定时器:</label>
+                <input type="text" id="messagePushCron" style="width: 35%"  name="messagePushCron" class="input_txt w99">
+                <br>
+                <label style="color: red;margin-left: 40%">*请设置未来某个时间点</label>
+            </div>
+            <div class="fitem" style="margin-left: 11%;">
+                <i style="color:#FF0000" >*</i><label>系统推送汇报定时器:</label>
+                <input type="text"   id="wxPushCron" style="width: 35%"  name="wxPushCron" class="input_txt w99">
+                <br>
+                <label style="color: red;margin-left: 40%">*请设置未来某个时间点</label>
+            </div>
+        </form>
+    </div>
+
+
+        <!--微信推送批量页面-->
+        <div id="dlg-batchWxpush">
+            <a href="#" class="easyui-linkbutton" iconCls="icon-save" onclick="saveBatchWxpush()">保存</a>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#wxpushImport').dialog('close')">取消</a>
+        </div>
+        <div id="wxpushImport" class="easyui-dialog" style="width:500px;height:230px;padding:10px 20px"
+             closed="true" buttons="#dlg-batchWxpush">
+            <table class="add_infor" width="100%" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td class="t_txt">模板下载：</td>
+                    <td><a href="/getWxpushImportTemplate?fileName=wxpushImportImport.xlsx"
+                           style="color: darkturquoise;font-size: medium;font-style: italic;text-decoration: underline;">微信通知导入统一模板</a></td>
+                </tr>
+                <tr>
+                    <td class="t_txt"><i style="color:#FF0000" >*</i>数据附件：</td>
+                    <td class="t_con">
+                        <form id="SWxpushTaskImportData" action="" method="post" enctype="multipart/form-data">
+                            <input type="file" id="wxPushFile" name="myfile" accept=".xlsx,.xls" />
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    <!--</div>-->
+</div>
+</body>
+<script>
+    init();
+
+    function init() {
+        // 获取查询类型
+        $('#tt').datagrid({
+            url: '/getAllWxPushTaskPageByPushStatus',
+            queryParams: {
+                type: $("#type").val()
+            },
+            toolbar: '#toolbar',
+            columns: [
+                [
+                {field: 'id', title: 'ID', width: '10%', align: 'center', hidden: true},
+                {field: 'pushAccountName', title: '姓名', width: '10%', align: 'center'},
+                {field: 'pushAccount', title: '微信号', width: '15%', align: 'center'},
+                {
+                    field: 'pushTemplateId',
+                    title: '使用的模板',
+                    width: '20%',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        if (value=="0") {
+                            return "通知";
+                        } else if (value=="1"){
+                            return "生日提醒";
+                        }else if (value=="2"){
+                            return "家庭成员生日提醒";
+                        }else if (value=="3"){
+                            return "节日提醒";
+                        }
+                    }
+                },
+                {field: 'pushTemplateParams', title: '模板中携带的参数', width: '56%', align: 'center'}
+                 ]
+            ]
+        });
+    }
+
+
+    function initSelect() {
+        $.ajax({
+            type: "POST",
+            url: "/getAllUserSelect" ,
+            data: "",
+            success: function (result) {
+                result = JSON.parse(result);
+                $("#wxPushNameSelect").empty();
+               var data = result.allUsers;
+               var html="";
+               for(var i in data){
+                   html+='<option value='+data[i].index+'>'+data[i].value+'</option>'
+               }
+               $("#wxPushNameSelect").html(html);
+               //选择完获取openId
+                getWxPushOpenId();
+            },
+            error : function() {
+                alert("初始下拉异常！");
+            }
+        });
+    }
+
+    function getWxPushOpenId() {
+        var id = $("#wxPushNameSelect").val();
+        $.ajax({
+            type: "get",
+            url: "/getUserOpenId" ,
+            data: {"id":id},
+            success: function (result) {
+                $("#wxPushUserId").val(result);
+            },
+            error : function() {
+                alert("获取该用户推送id失败！");
+            }
+        });
+    }
+
+
+    /* 开启微信推送批量导入界面*/
+    function wxpushImport(){
+        $('#wxpushImport').dialog('open').dialog('setTitle','微信推送批量导入');
+    }
+
+    function saveBatchWxpush(){
+        var type = "myfile";          //后台接收时需要的参数名称，自定义即可
+        var id = "wxPushFile";            //即input的id，用来寻找值
+        var formData = new FormData();
+        formData.append(type, $("#"+id)[0].files[0]);    //生成一对表单属性
+        $.ajax({
+            type: "POST",           //因为是传输文件，所以必须是post
+            url: '/sWxPushTaskExcelImport',         //对应的后台处理类的地址
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                $('#SWxpushTaskImportData')[0].reset();
+                $('#wxpushImport').dialog('close');
+                $('#tt').datagrid('reload');
+            }
+        });
+    }
+
+    /*开启短信修改或新增页面*/
+    function editWxpush(i) {
+        if(i==1){
+            $('#eme')[0].reset();
+            initSelect();
+            $('#wxPushAddAndEdit').dialog('open').dialog('setTitle','微信推送的新增/修改');
+        }else{
+            var row = $('#tt').datagrid('getSelected');
+            //弹框加载
+            if (row){
+                $('#wxPushAddAndEdit').dialog('open').dialog('setTitle','微信推送的新增/修改');
+                $('#eme').form('load',row);
+            }else{
+                alert("请选择一条记录");
+            }
+        }
+    }
+
+    function openCronExecuteTime() {
+        $("#cron").val("");
+        $("#executeTime").empty();
+        $('#getCronExecuteRecently').dialog('open').dialog('setTitle','定时器执行时间');
+    }
+
+    function getCronExecuteTime() {
+        var result =$("#cron").val();
+        if(result==null || result=="" || result=='undefined'){
+           alert("定时器表达式不能为空");
+        }else {
+            $.ajax({
+                type: "post",
+                url: "/getCronExecuteRecently" ,
+                data: {
+                    cron: result
+                },
+                success: function (result) {
+                    if(result.success){
+                        var data =result.data;
+                        var s ="";
+                        for (var i=0;i < data.length-1;i++){
+                            var j=i+1;
+                            s+="第"+j+"次执行时间:"+data[i]+"&#10;&#10;";
+                        }
+                        $("#executeTime").html(s);
+                    }else{
+                        $("#executeTime").val(result.data);
+                    }
+                },
+                error : function() {
+                    alert("获取数据失败！");
+                }
+            });
+        }
+    }
+
+
+    function updateCron(){
+        $('#editCron').dialog('open').dialog('setTitle','定时器修改');
+        $.ajax({
+            type: "post",
+            url: "/getAllCron" ,
+            data: "",
+            success: function (result) {
+                $("#dataCheckCron").val(result["1"]);
+                $("#wxPushCron").val(result["8"]);
+                $("#emailPushCron").val(result["2"]);
+                $("#messagePushCron").val(result["3"]);
+            },
+            error : function() {
+                alert("获取数据失败！");
+            }
+        });
+    }
+
+    function saveOrUpdateCron() {
+       var dataCheckCron =  $("#dataCheckCron").val();
+        var wxPushCron = $("#wxPushCron").val();
+        var emailPushCron = $("#emailPushCron").val();
+        var messagePushCron = $("#messagePushCron").val();
+        if(judgeNull(dataCheckCron) && judgeNull(emailPushCron)  && judgeNull(messagePushCron) && judgeNull(wxPushCron)){
+             $.ajax({
+                type: "post",
+                url: "/saveOrUpdateCron" ,
+                data: $('#cronForm').serializeArray(),
+                success: function (result) {
+                    $('#cronForm')[0].reset();
+                    $('#editCron').dialog('close');
+                },
+                error : function() {
+                    alert("ajax异常！");
+                }
+            });
+        }else{
+            alert("以上均为必填项，不能为空!!!");
+        }
+
+    }
+
+    function judgeNull(result) {
+        if(result==null || result=="" || result=='undefined'){
+            return false;
+        }else {
+            return true;
+        }
+    }
+
+    /*提交邮件通知新增和修改*/
+    function saveOrUpdateWxpushTask(){
+        $.ajax({
+            type: "POST",
+            url: "/saveOrUpdateWxpushTask" ,
+            data: $('#eme').serializeArray(),
+            success: function (result) {
+                $('#eme')[0].reset();
+                $('#wxPushAddAndEdit').dialog('close')
+                $('#tt').datagrid('reload');
+            },
+            error : function() {
+                alert("异常！");
+            }
+        });
+    }
+</script>
+</html>
+

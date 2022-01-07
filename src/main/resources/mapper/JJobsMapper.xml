@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.home.homebirthdaytip.mapper.JJobsMapper">
+
+    <resultMap id="BaseResultMap" type="com.home.homebirthdaytip.domain.JJobs">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="cron" column="cron" jdbcType="VARCHAR"/>
+            <result property="cronType" column="cron_type" jdbcType="INTEGER"/>
+            <result property="cronTypeDescribe" column="cron_type_describe" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,cron,cron_type,
+        cron_type_describe
+    </sql>
+    <select id="selectOneByCronType" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from j_jobs
+        where
+        cron_type = #{cronType,jdbcType=NUMERIC}
+    </select>
+</mapper>

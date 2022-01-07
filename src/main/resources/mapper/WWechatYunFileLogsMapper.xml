@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.home.homebirthdaytip.mapper.WWechatYunFileLogsMapper">
+
+    <resultMap id="BaseResultMap" type="com.home.homebirthdaytip.domain.WWechatYunFileLogs">
+            <id property="id" column="id" jdbcType="VARCHAR"/>
+            <result property="operaUser" column="opera_user" jdbcType="VARCHAR"/>
+            <result property="operaTime" column="opera_time" jdbcType="TIMESTAMP"/>
+            <result property="content" column="content" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,opera_user,opera_time,
+        content
+    </sql>
+    <select id="selectAllByOperaUserOrderByOperaTimeDesc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from w_wechat_yun_file_logs
+        where
+        opera_user = #{operaUser,jdbcType=VARCHAR}
+        order by opera_time desc
+    </select>
+
+</mapper>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.home.homebirthdaytip.mapper.FFilesMapper">
+
+    <resultMap id="BaseResultMap" type="com.home.homebirthdaytip.domain.FFiles">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="linPath" column="lin_path" jdbcType="VARCHAR"/>
+            <result property="winPath" column="win_path" jdbcType="VARCHAR"/>
+            <result property="fileType" column="file_type" jdbcType="TINYINT"/>
+            <result property="fileSuffix" column="file_suffix" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,lin_path,win_path,
+        file_type,file_suffix,status
+    </sql>
+    <select id="selectAllByStatus" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from f_files
+        where
+        status = #{status,jdbcType=NUMERIC}
+    </select>
+    <select id="selectAllByFileTypeAndStatusOrderById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from f_files
+        where
+        file_type = #{fileType,jdbcType=NUMERIC}
+        AND status = #{status,jdbcType=NUMERIC}
+        order by id
+    </select>
+</mapper>

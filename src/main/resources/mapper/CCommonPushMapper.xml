@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.home.homebirthdaytip.mapper.CCommonPushMapper">
+
+    <resultMap id="BaseResultMap" type="com.home.homebirthdaytip.domain.CCommonPush">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="pushType" column="push_type" jdbcType="TINYINT"/>
+            <result property="pushTemplateId" column="push_template_id" jdbcType="VARCHAR"/>
+            <result property="pushTemplateParams" column="push_template_params" jdbcType="VARCHAR"/>
+            <result property="pushAccount" column="push_account" jdbcType="VARCHAR"/>
+            <result property="pushAccountName" column="push_account_name" jdbcType="VARCHAR"/>
+            <result property="pushCreateTime" column="push_create_time" jdbcType="TIMESTAMP"/>
+            <result property="pushStatus" column="push_status" jdbcType="TINYINT"/>
+            <result property="pushStartTime" column="push_start_time" jdbcType="TIMESTAMP"/>
+            <result property="pushEndTime" column="push_end_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,push_type,push_template_id,
+        push_template_params,push_account,push_account_name,
+        push_create_time,push_status,push_start_time,
+        push_end_time
+    </sql>
+    <select id="selectAllByPushTypeAndPushStatus" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from c_common_push
+        where
+        push_type = #{pushType,jdbcType=NUMERIC}
+        AND push_status = #{pushStatus,jdbcType=NUMERIC}
+    </select>
+    <select id="countByPushTypeAndPushStatus" resultType="int">
+select count(*)
+ from c_common_push
+where
+push_type = #{pushType,jdbcType=NUMERIC}
+ AND push_status = #{pushStatus,jdbcType=NUMERIC}
+</select>
+    <select id="selectPushStatusAndPushTypeAndPushThemeAndPushAccountNameByPushType" resultMap="BaseResultMap">
+select push_status, push_type, push_theme, push_account_name
+from c_common_push
+where
+push_type != #{pushType,jdbcType=NUMERIC}
+</select>
+    <select id="selectAllByPushTypeAndPushStatusOrderByIdDesc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from c_common_push
+        where
+        push_type = #{pushType,jdbcType=NUMERIC}
+        AND push_status = #{pushStatus,jdbcType=NUMERIC}
+        order by id desc
+    </select>
+
+</mapper>

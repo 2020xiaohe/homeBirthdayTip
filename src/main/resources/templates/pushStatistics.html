@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>小何之家</title>
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" type="text/css" href="css/table.css">
+    <link rel="stylesheet" type="text/css" href="css/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="css/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="css/demo/demo.css">
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="js/easyUILanguage/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="js/echarts.min.js"></script>
+</head>
+<style>
+    .navbarDiv{
+        width: 1335px
+    }
+    #drawing {
+        width: 1333px;
+        height: 564px;
+     /*   border:1px solid;*/
+        position: relative;
+    }
+
+    .circle {
+        /*background-color: green;*/
+        background-color: #666666;
+        borderColor:  #666666;
+        position: absolute;
+    }
+   a{
+       text-decoration:none;
+   }
+    .abutton{
+        border:1px solid #d0d6f8;
+        height:30px;
+        line-height:30px;
+        padding-left:35px;
+        padding-right:10px;
+        display:inline-block;
+        color:#000000;
+    }
+    .fitem{
+        margin-left: 30%;
+        margin-top: 3%;
+    }
+ .abutton:hover{
+        border:1px solid #198eb7;
+        height:30px;
+        line-height:30px;
+        padding-left:35px;
+        padding-right:10px;
+        display:inline-block;
+         color:#527fa3;
+    }
+
+    /*下载模板样式*/
+    .add_infor{
+        border-left:1px solid #d2d2d2;
+        border-top:1px solid #d2d2d2;
+        font-size:12px;
+    }
+    .add_infor td{
+        height:32px;
+        line-height:32px;
+        border-right:1px solid #d2d2d2;
+        border-left:1px solid #d2d2d2;
+        border-top:1px solid #d2d2d2;
+        border-bottom:1px solid #d2d2d2;
+        vertical-align:middle;
+        padding:5px;
+    }
+    .t_txt{ width:18%; background-color:#E6F1F4; font-weight:bold; text-align:right;}
+    .t_con{
+        width:32%;
+        padding-left:5px;
+    }
+
+    .datagrid-cell, .datagrid-cell-group, .datagrid-header-rownumber, .datagrid-cell-rownumber
+    {
+        text-overflow: ellipsis;
+    }
+
+    .preview-viewport {
+        position: absolute;
+        top: 4px;
+        bottom: 15px;
+        right: 15px;
+        left: 1px;
+        border-radius: 5px;
+        overflow: hidden;
+        box-shadow: 0 0 15px rgb(0 0 0 / 10%);
+    }
+    .preview-viewport-right {
+        position: absolute;
+        top: 4px;
+        bottom: 15px;
+        right: 15px;
+        left: 680px;
+        border-radius: 5px;
+        overflow: hidden;
+        box-shadow: 0 0 15px rgb(0 0 0 / 10%);
+    }
+    .preview-viewport-button {
+        position: absolute;
+        top: 340px;
+        bottom: 15px;
+        right: 15px;
+        left: 1px;
+        border-radius: 5px;
+        overflow: hidden;
+        box-shadow: 0 0 15px rgb(0 0 0 / 10%);
+    }
+
+    .input-group {
+        position: relative;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        -ms-flex-align: stretch;
+        align-items: stretch;
+        width: 100%;
+    }
+    .custom-select {
+        padding: .375rem 1.75rem .375rem .75rem;
+    }
+</style>
+
+<body style="margin: 4px 0px 0px 14px;">
+<div class="navbarDiv">
+    <ul>
+        <li><a href="/index">生日推送</a></li>
+        <li><a href="/wxPushImport">微信通知</a></li>
+        <li><a href="/emailPushImport">邮件通知</a></li>
+        <li class="active" style="width: 338px"><a href="/pushStatistics">通知统计</a></li>
+    </ul>
+</div>
+<div id="drawing">
+    <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+    <div class="preview-viewport"  style="width: 650px;height:330px;float: left">
+        <div style="float: left;margin-left: 5px;margin-top: 5px">
+            <span style="font-size: 24px">邮件推送统计</span>
+        </div>
+        <div id="emailtj" style="width:650px;height:250px;margin-top:40px;">
+
+        </div>
+    </div>
+    <div class="preview-viewport-right"  style="width: 655px;height:330px;float: right;border: 1px silver">
+        <div style="float: left;margin-left: 5px;margin-top: 5px">
+            <span style="font-size: 24px">短信推送统计</span>
+        </div>
+        <div id="wxpushtj" style="width:650px;height:250px;margin-top:40px">
+
+        </div>
+
+
+    </div>
+    <div class="preview-viewport-button"  style="width: 1335px;height:250px;float: right;border: 1px silver">
+        <div style="float: left;margin-left: 5px;margin-top: 5px">
+            <span style="font-size: 24px">近七日推送情况</span>
+        </div>
+
+        <div class="config-item input-group input-group-sm" style="width: 180px;float: right"><div class="input-group-prepend">
+            <div title="" style="margin-top: 5px; margin-left: 12px;margin-right: 11px;" class="input-group-text" data-toggle="tooltip" >
+                <span style="font-size: 0.8rem;">类型：</span></div>
+            </div>
+            <select id="serviceType" class="custom-select" onchange="initWeekCondition()">
+                <option selected value="0">邮件推送</option>
+                <option value="1">微信推送</option>
+                <option value="2">短信推送</option>
+            </select>
+        </div>
+
+        <div id="puskWeekConsition" style="width: 1335px;height:210px;margin-top: 40px"> </div>
+    </div>
+</div>
+</body>
+<script>
+    let bgColor = '#fff';
+    let title = '总量';
+    let color = [ '#ff0000', '#008000', '#808080', '#00FFFF', '#4AEAB0'];
+    var i={
+        color:'green'
+    };
+    var j={
+        color:'red'
+    };
+    var k={
+        color:'gray'
+    };
+    $.ajax({
+        type: "get",
+        url: "/emailPushStatistics" ,
+        data: "",
+        success: function (result) {
+            var myChart = echarts.init(document.getElementById('emailtj'));
+            let echartData = result;
+            $.each(echartData,function(index,item){
+                if(item.name =="等待发送"){
+                    item.itemStyle=k;
+                }else if(item.name =="已经发送"){
+                    item.itemStyle=i;
+                }else if(item.name =="发送异常"){
+                    item.itemStyle=j;
+                }
+            });
+            let formatNumber = function(num) {
+                let reg = /(?=(\B)(\d{3})+$)/g;
+                return num.toString().replace(reg, ',');
+            }
+            let total = echartData.reduce((a, b) => {
+                return a + b.value * 1
+            }, 0);
+
+            option = {
+                backgroundColor: bgColor,
+                color: color,
+                tooltip: {
+                    trigger: 'item'
+                },
+                title: [{
+                    text: '{name|' + title + '}\n{val|' + formatNumber(total) + '}',
+                    top: 'center',
+                    left: 'center',
+                    textStyle: {
+                        rich: {
+                            name: {
+                                fontSize: 14,
+                                fontWeight: 'normal',
+                                color: '#666666',
+                                padding: [10, 0]
+                            },
+                            val: {
+                                fontSize: 32,
+                                fontWeight: 'bold',
+                                color: '#333333',
+                            }
+                        }
+                    }
+                },{
+                    text: '单位：封',
+                    top: 20,
+                    left: 20,
+                    textStyle: {
+                        fontSize: 14,
+                        color:'#666666',
+                        fontWeight: 400
+                    }
+                }],
+                series: [{
+                    type: 'pie',
+                    radius: ['45%', '60%'],
+                    center: ['50%', '50%'],
+                    data: echartData,
+                    hoverAnimation: false,
+                    itemStyle: {
+                        normal: {
+                            borderColor: bgColor,
+                            borderWidth: 2
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            length: 20,
+                            length2: 120,
+                            lineStyle: {
+                                color: '#e6e6e6'
+                            }
+                        }
+                    },
+                    label: {
+                        normal: {
+                            formatter: params => {
+                                return (
+                                    '{icon|●}{name|' + params.name + '}{value|' +
+                                    formatNumber(params.value) + '}'
+                                );
+                            },
+                            padding: [0 , -100, 25, -100],
+                            rich: {
+                                icon: {
+                                    fontSize: 16
+                                },
+                                name: {
+                                    fontSize: 14,
+                                    padding: [0, 10, 0, 4],
+                                    color: '#666666'
+                                },
+                                value: {
+                                    fontSize: 18,
+                                    fontWeight: 'bold',
+                                    color: '#333333'
+                                }
+                            }
+                        }
+                    },
+                }]
+            };
+            myChart.setOption(option);
+        },
+        error : function() {
+            alert("获取数据失败！");
+        }
+    });
+</script>
+<script>
+    $.ajax({
+        type: "get",
+        url: "/wxPushStatistics" ,
+        data: "",
+        success: function (data) {
+            var myChart1 = echarts.init(document.getElementById('wxpushtj'));
+            let echartData1 = data;
+            $.each(echartData1,function(index,item){
+                if(item.name =="等待发送"){
+                    item.itemStyle=k;
+                }else if(item.name =="已经发送"){
+                    item.itemStyle=i;
+                }else if(item.name =="发送异常"){
+                    item.itemStyle=j;
+                }
+            });
+
+
+            let formatNumber1 = function(num) {
+                let reg = /(?=(\B)(\d{3})+$)/g;
+                return num.toString().replace(reg, ',');
+            }
+            let total1 = echartData1.reduce((a, b) => {
+                return a + b.value * 1
+            }, 0);
+
+            option1 = {
+                backgroundColor: bgColor,
+                color: color,
+                tooltip: {
+                    trigger: 'item'
+                },
+                title: [{
+                    text: '{name|' + title + '}\n{val|' + formatNumber1(total1) + '}',
+                    top: 'center',
+                    left: 'center',
+                    textStyle: {
+                        rich: {
+                            name: {
+                                fontSize: 14,
+                                fontWeight: 'normal',
+                                color: '#666666',
+                                padding: [10, 0]
+                            },
+                            val: {
+                                fontSize: 32,
+                                fontWeight: 'bold',
+                                color: '#333333',
+                            }
+                        }
+                    }
+                },{
+                    text: '单位：条',
+                    top: 20,
+                    left: 20,
+                    textStyle: {
+                        fontSize: 14,
+                        color:'#666666',
+                        fontWeight: 400
+                    }
+                }],
+                series: [{
+                    type: 'pie',
+                    radius: ['45%', '60%'],
+                    center: ['50%', '50%'],
+                    data: echartData1,
+                    hoverAnimation: false,
+                    itemStyle: {
+                        normal: {
+                            borderColor: bgColor,
+                            borderWidth: 2
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            length: 20,
+                            length2: 120,
+                            lineStyle: {
+                                color: '#e6e6e6'
+                            }
+                        }
+                    },
+                    label: {
+                        normal: {
+                            formatter: params => {
+                                return (
+                                    '{icon|●}{name|' + params.name + '}{value|' +
+                                    formatNumber1(params.value) + '}'
+                                );
+                            },
+                            padding: [0 , -100, 25, -100],
+                            rich: {
+                                icon: {
+                                    fontSize: 16
+                                },
+                                name: {
+                                    fontSize: 14,
+                                    padding: [0, 10, 0, 4],
+                                    color: '#666666'
+                                },
+                                value: {
+                                    fontSize: 18,
+                                    fontWeight: 'bold',
+                                    color: '#333333'
+                                }
+                            }
+                        }
+                    },
+                }]
+            };
+            myChart1.setOption(option1);
+
+        },
+        error : function() {
+            alert("获取数据失败！");
+        }
+    });
+
+    initWeekCondition();
+
+    function initWeekCondition() {
+        var myChart = echarts.init(document.getElementById('puskWeekConsition'));
+        $.ajax({
+            type: "get",
+            url: "/weekPushCondition" ,
+            data: {"type":$("#serviceType").val()},
+            success: function (r) {
+                var legList = r.leg;
+                var dataList = r.data;
+                option = {
+                    title: {
+                        text: ''
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    xAxis: {
+                        data: legList
+                    },
+                    yAxis: {},
+                    series: [{
+                        type: 'bar',
+                        data:dataList
+                    }]
+                };
+                myChart.setOption(option);
+            },
+            error : function() {
+                alert("获取数据失败！");
+            }
+        });
+    }
+</script>
+</html>

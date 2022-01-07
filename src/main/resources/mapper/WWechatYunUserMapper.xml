@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.home.homebirthdaytip.mapper.WWechatYunUserMapper">
+
+    <resultMap id="BaseResultMap" type="com.home.homebirthdaytip.domain.WWechatYunUser">
+            <id property="openId" column="open_id" jdbcType="VARCHAR"/>
+            <result property="avatarUrl" column="avatar_url" jdbcType="VARCHAR"/>
+            <result property="nickName" column="nick_name" jdbcType="VARCHAR"/>
+            <result property="longitude" column="longitude" jdbcType="DOUBLE"/>
+            <result property="latitude" column="latitude" jdbcType="DOUBLE"/>
+            <result property="city" column="city" jdbcType="VARCHAR"/>
+            <result property="province" column="province" jdbcType="VARCHAR"/>
+            <result property="country" column="country" jdbcType="VARCHAR"/>
+            <result property="onlineStatus" column="online_status" jdbcType="TINYINT"/>
+            <result property="onlineHeadIcronId" column="online_head_icron_id" jdbcType="VARCHAR"/>
+            <result property="outlineHeadIcronId" column="outline_head_icron_id" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        open_id,avatar_url,nick_name,
+        longitude,latitude,city,
+        province,country,online_status,
+        online_head_icron_id,outline_head_icron_id
+    </sql>
+    <select id="selectOnlineHeadIcronIdAndOutlineHeadIcronIdAndLongitudeAndLatitudeAndOnlineStatus"
+            resultMap="BaseResultMap">
+select online_head_icron_id, outline_head_icron_id, longitude, latitude, online_status
+from w_wechat_yun_user
+</select>
+
+</mapper>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.home.homebirthdaytip.mapper.WWechatYunFilesMapper">
+
+    <resultMap id="BaseResultMap" type="com.home.homebirthdaytip.domain.WWechatYunFiles">
+            <id property="id" column="id" jdbcType="VARCHAR"/>
+            <result property="linPath" column="lin_path" jdbcType="VARCHAR"/>
+            <result property="winPath" column="win_path" jdbcType="VARCHAR"/>
+            <result property="fileSuffix" column="file_suffix" jdbcType="VARCHAR"/>
+            <result property="fileType" column="file_type" jdbcType="TINYINT"/>
+            <result property="uploadUser" column="upload_user" jdbcType="VARCHAR"/>
+            <result property="uploadTime" column="upload_time" jdbcType="TIMESTAMP"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
+            <result property="synchronizeStatus" column="synchronize_status" jdbcType="TINYINT"/>
+            <result property="fileSize" column="file_size" jdbcType="DOUBLE"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,lin_path,win_path,
+        file_suffix,file_type,upload_user,
+        upload_time,status,synchronize_status,
+        file_size
+    </sql>
+    <select id="selectUploadTimeByUploadUserAndFileTypeAndStatusOrderByUploadTimeDesc" resultMap="BaseResultMap">
+select DATE_FORMAT(upload_time,'%Y-%m-%d') upload_time
+from w_wechat_yun_files
+where
+upload_user = #{uploadUser,jdbcType=VARCHAR}
+ AND file_type = #{fileType,jdbcType=NUMERIC}
+ AND status = #{status,jdbcType=NUMERIC}
+group by DATE_FORMAT(upload_time,'%Y-%m-%d')
+order by  DATE_FORMAT(upload_time,'%Y-%m-%d')
+</select>
+    <select id="selectAllByFileSuffixLikeAndUploadUserAndFileTypeAndStatusOrderByUploadTime" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from w_wechat_yun_files
+        where
+        file_suffix like #{fileSuffix,jdbcType=VARCHAR}
+        AND upload_user = #{uploadUser,jdbcType=VARCHAR}
+        AND file_type = #{fileType,jdbcType=NUMERIC}
+        AND status = #{status,jdbcType=NUMERIC}
+        order by upload_time
+    </select>
+
+</mapper>

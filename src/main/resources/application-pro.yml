@@ -1,0 +1,75 @@
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
+  port: 8082
+#=========================== database =========================#
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.1.211:3306/homebirthdaytip?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&serverTimezone=GMT%2B8&characterEncoding=utf8
+    type: com.alibaba.druid.pool.DruidDataSource
+    username: ENC(sJS1GPNOoZFg5fbXKgoZyg==)
+    password: ENC(CMliGSuYwy/ajjvv4zTZVQ==)
+    druid:
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      max-wait: 60000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: select 1
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      filters: stat,wall
+      connection-properties: druid.stat.mergeSql\=true;druid.stat.slowSqlMillis\=5000
+      web-stat-filter:
+        enabled: true
+        url-pattern: /*
+        exclusions: .js,*.gif,*.jpg,*.bmp,*.png,*.css,*.ico,/druid/*
+      stat-view-servlet:
+        url-pattern: /druid/*
+        reset-enable: false
+        login-username: root
+        login-password: Admin_q1w2e3
+  #=========================== email =========================#
+  mail:
+    host: ENC(2a7WPQAMWs2i2w2OEsYO1Vlm9yxdHZzl) #发送邮件服务器
+    username: ENC(EifcRkw84zJ8J9HFM9dwRlSqDwRuWp0sksuiYIwFW/I=) #发送邮件的邮箱地址
+    password: ENC(ncgJK3tEAtzwcz4uvE8LkA1LnpOal3zo) #客户端授权码，不是邮箱密码，这个在qq邮箱设置里面自动生成的
+    properties.mail.smtp.port: 465 #端口号465或587
+    from: ENC(EifcRkw84zJ8J9HFM9dwRlSqDwRuWp0sksuiYIwFW/I=) #发送邮件的地址，和上面username一致可以任意
+    properties.mail.smtp.starttls.enable: true
+    properties.mail.smtp.starttls.required: true
+    properties.mail.smtp.ssl.enable: true
+    default-encoding: utf-8
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
+#=========================== weChatPush =========================#
+weixin:
+  jscode2sessionUrl: https://api.weixin.qq.com/sns/jscode2session #微信通过code获取openId, sessionKey, unionId
+  appId: wxd6b8045142e1cd1c                   #微信测试公众平台appId
+  appSecret: 29c2c6a1a221c0db35add2d691c4b6e4 #微信测试公众平台appSecret
+  redictUrl: https://www.baidu.com/      #微信推送消息点击后跳转地址
+  yun_appId: wx154e457a220ff32d         #小何家的云appId
+  yun_appSecret: d5693773539567a9dfbf98e7b36711ef #小何家的云appSecret
+#=========================== messagePush =========================#
+duanxin:
+  accessKeyID: ENC(Ogss4xjbqR76Ozhx6qupXE/uhUClb2mlck4IcOVSynPDZLq8vLoMHLQ/wU5JWULz)   #小何之家短信appId
+  accessKeySecret: ENC(8abycv0wvl/qF4SZgScLpe7nzsNC9/BtMBPxiDYeC6umbon/ccm7QfdclJUuf7mx)  #小何之家短信appSecret
+#=========================== Account =========================#
+user:
+  adminId: 10086                             #系统通知对象Id
+  adminTel: ENC(gSjSaUPQBid+9YpVFfwmRzHmqWKVEN+A)
+#===========================FilePath===========================#
+sysPath:
+  windowsUploadPath: C:/Users/hemb/Desktop/test/
+  linuxUploadPath: /usr/local/upload_file/
+

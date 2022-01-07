@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.home.homebirthdaytip.mapper.HHomeMemberMapper">
+
+    <resultMap id="BaseResultMap" type="com.home.homebirthdaytip.domain.HHomeMember">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="birthday" column="birthday" jdbcType="VARCHAR"/>
+            <result property="oldBirthday" column="old_birthday" jdbcType="VARCHAR"/>
+            <result property="wxOpenId" column="wx_open_id" jdbcType="VARCHAR"/>
+            <result property="phoneNumber" column="phone_number" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="VARCHAR"/>
+            <result property="seq" column="seq" jdbcType="INTEGER"/>
+            <result property="meaasgeIsSended" column="meaasge_is_sended" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,name,birthday,
+        old_birthday,wx_open_id,phone_number,
+        status,seq,meaasge_is_sended
+    </sql>
+    <select id="selectAllByStatusOrderBySeq" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from h_home_member
+        where
+        status = #{status,jdbcType=VARCHAR}
+        order by seq
+    </select>
+</mapper>

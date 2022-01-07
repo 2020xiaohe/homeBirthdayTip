@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+</head>
+<style>
+    .detail p{width:100%;font-size:14px; color:#353535; text-indent:28px; padding-bottom:10px; line-height:30px; padding:5px 0;}
+    #tabRegister .td1 {width:37%; text-align:right;font-size:16px;}
+    #tabRegister .td2 { text-align:left;}
+    #tabRegister .textInput { border-width:1px;border-style:solid;border-radius:5px;border-color:#0094ff; height:25px;width:300px}
+    #tabRegister .trHight { height:50px;line-height:50px;}
+</style>
+<body>
+<form id="form" action="/doRegister" method="post">
+    <div class="width100 marT15 content_news_list">
+        <div class="width96 mauto">
+            <div class="width100" >
+                <table style="width:100%" id="tabRegister">
+                    <tr class="trHight">
+                        <td class="td1">
+                            用户名 
+                        </td><!--用户名信息验证-->
+                        <td  class="td2"><input type="text" id="inp_user" name="name" class="textInput" onchange="m_userTipOnblur();"  />
+                            <span id="span_userTip" style="color:#f00;display:inline-block;" >*</span>
+                        </td><!--用户名信息验证-->
+                    </tr>
+                    <tr class="trHight">
+                        <td class="td1">
+                            密码 
+                        </td><!--密码信息验证-->
+                        <td  class="td2"><input type="password"id="password" name="password" class="textInput" onblur="checkPassword()" />
+                            <span id="span_PasswordTip" style="color:#f00;display:inline-block;" >*</span>
+                        </td><!--密码信息验证-->
+                    </tr>
+                    <tr class="trHight">
+                        <td class="td1">
+                            确认密码 
+                        </td><!--确认密码信息验证-->
+                        <td  class="td2"><input type="password" id="comfirmPassword" onblur="cPassword()"  name="comfirmPassword" class="textInput" />
+                            <span id="span_ConfirmPasswordTip" style="color:#f00;display:inline-block;" >*</span>
+                        </td><!--确认密码信息验证-->
+                    </tr>
+                    <tr  style="height:70px;line-height:70px;">
+                        <td class="td1">
+                        </td>
+                        <td  class="td2" style="padding-top :10px;" >
+                            <img  src="images/zhuce.png" onclick="handIn();">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</form>
+
+</body>
+<script>
+    var m_inp_user;
+    var m_useOrNo;
+    function m_userTipOnblur() {
+        m_inp_user = $("#inp_user").val();//获取inp_user控件
+        $("#span_userTip").css("display", "inline-block");//使span_userTip控件显示，对一个对象指定inline-block属性，可以将对象呈递为内联对象，但是对象的内容作为块对象呈递。
+        if (m_inp_user == "" || m_inp_user==undefined || m_inp_user==null) { //如果用户名为空，提示不可为空
+            $("#span_userTip").css("color", "#f00");//span_userTip控件的字为红色
+            $("#span_userTip")[0].innerText = "* 用户名不能为空";//赋给span_userTip控件的值内容为：用户名不能为空
+        } else {//如果有值
+            $.ajax({
+                type: "get",
+                url: "/checkUserName?name="+ m_inp_user,
+                data: "",
+                success: function (data) {
+                    if (data) {//为true，则该用户已经被占用
+                        $("#span_userTip").css("color", "#0094ff");//span_userTip控件的字为蓝色
+                        $("#span_userTip")[0].innerText = "* 此用户名可以放心使用";//赋给span_userTip控件的值内容为：此用户名可以放心使用
+                    } else {//此用户名可以放心使用
+                        $("#span_userTip").css("color", "#f00");//span_userTip控件的字为红色
+                        $("#span_userTip")[0].innerText = "* 该用户名已经被占用";//赋给span_userTip控件的值内容为：该用户名已经被占用
+                    }
+                },
+                error: function (error) {
+                    alert("ajax请求失败");
+                    // var m_error = error.responseText;
+                    // if (m_error.indexOf("在请求中检测到包含潜在危险的数据") >= 1000) {
+                    //     $("#span_userTip").css("color", "#f00");//span_userTip控件的字为红色
+                    //     $("#span_userTip")[0].innerText = "* 存在不合法字符，请更换！";//赋给span_userTip控件的值内容为：存在不合法字符,请更换
+                    //
+                    // }else{
+                    //     $("#span_userTip").css("color", "#f00");//span_userTip控件的字为红色
+                    //     $("#span_userTip")[0].innerText = "* 无法确定该用户名是否被占用，请稍后再试！";//赋给span_userTip控件的值内容为：无法确定该用户名是否被占用，请稍后再试
+                    // }
+                }
+            });
+        }
+    }
+
+    function checkPassword() {
+        var pattern = /^.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*? ]).*$/;
+        var password = $("#password").val();
+        if (password == "" || password==undefined || password==null){
+            $("#span_PasswordTip").css("color", "#f00");
+            $("#span_PasswordTip")[0].innerText = "* 密码不能为空";
+        }else {
+            if(pattern.test(password)){
+                $("#span_PasswordTip").css("color", "#0094ff");
+                $("#span_PasswordTip")[0].innerText = "* 用户名正确";
+            }else {
+                $("#span_PasswordTip").css("color", "#f00");
+                $("#span_PasswordTip")[0].innerText = "* 最少6位，包括至少1个大写字母，1个小写字母，1个数字，1个特殊字符";
+            }
+        }
+    }
+
+    function cPassword() {
+        var password = $("#password").val();
+        var comfirmPassword = $("#comfirmPassword").val();
+        if(comfirmPassword == "" || comfirmPassword==undefined || comfirmPassword==null){
+            $("#span_ConfirmPasswordTip").css("color", "#f00");
+            $("#span_ConfirmPasswordTip")[0].innerText = "* 请再次输入密码";
+        }else {
+            if(password==comfirmPassword){
+                $("#span_ConfirmPasswordTip").css("color", "#0094ff");
+                $("#span_ConfirmPasswordTip")[0].innerText = "* 两次密码一致";
+            }else {
+                $("#span_ConfirmPasswordTip").css("color", "#f00");
+                $("#span_ConfirmPasswordTip")[0].innerText = "* 两次密码不一致";
+            }
+        }
+    }
+
+    function handIn() {
+        $.ajax({
+            type: "POST",
+            url: "/doRegister" ,
+            data: $('#form').serializeArray(),
+            success: function (result) {
+              if (result){
+                  alert("注册成功！");
+                  location.href="/index";
+              }else{
+                  alert("注册失败！");
+                  location.reload();
+              }
+            },
+            error : function() {
+                alert("异常！");
+            }
+        });
+    }
+</script>
+</html>

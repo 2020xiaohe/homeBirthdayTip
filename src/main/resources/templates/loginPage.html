@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <link rel="stylesheet" type="text/css" href="/css/login.css">
+    <script type="text/javascript" src="/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascrip" src="/js/jquery.min.js"></script>
+</head>
+<body>
+<div class="login_panel">
+    <p class="login_title">用户登录</p>
+    <form action="/doLogin" method="post" autocomplete="off" id="loginForm">
+        <label class="login_label">用　户　名</label>
+        <input type="text" class="text_input" style="outline:none;" name="username" id="username" value="" />
+        <label class="login_label">密　码</label>
+        <input type="password" class="text_input" style="outline:none;"   name="password" id="password" value="" />
+        <input type="button" class="text_btn" onclick="login()"  id="loginBtn" value="登　录" />
+    </form>
+    <p class="login_botton" style="color: #bbb;" >
+        <label>备案号：<a  style="color: #bbb;" href="https://beian.miit.gov.cn">闽ICP备2021014612号</a></label>
+        <label style="margin-left: 4%">邮箱：xiaohe20210526@163.com</label>
+        <label style="margin-left: 2%">地址：福建省漳州市云霄县马铺乡杨美村中楼37号</label>
+
+    </p>
+</div>
+
+</body>
+<script type="text/javascript">
+    function login(){
+        var userName = $("#username").val();
+        var password = $("#password").val();
+        if(userName==""||password==""){
+            alert("用户名或密码不能为空");
+        }else{
+            document.getElementById("loginForm").submit();
+        }
+    }
+</script>
+</html>

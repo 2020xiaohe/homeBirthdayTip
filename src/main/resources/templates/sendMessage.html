@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>小何之家</title>
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" type="text/css" href="css/table.css">
+    <link rel="stylesheet" type="text/css" href="css/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="css/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="css/demo/demo.css">
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="js/easyUILanguage/locale/easyui-lang-zh_CN.js"></script>
+</head>
+<style>
+    .navbarDiv{
+        width: 1335px
+    }
+    #drawing {
+        width: 1333px;
+        height: 564px;
+     /*   border:1px solid;*/
+        position: relative;
+    }
+
+    .circle {
+        /*background-color: green;*/
+        background-color: #666666;
+        borderColor:  #666666;
+        position: absolute;
+    }
+   a{
+       text-decoration:none;
+   }
+    .abutton{
+        border:1px solid #d0d6f8;
+        height:30px;
+        line-height:30px;
+        padding-left:35px;
+        padding-right:10px;
+        display:inline-block;
+        color:#000000;
+    }
+    .fitem{
+        margin-left: 30%;
+        margin-top: 3%;
+    }
+ .abutton:hover{
+        border:1px solid #198eb7;
+        height:30px;
+        line-height:30px;
+        padding-left:35px;
+        padding-right:10px;
+        display:inline-block;
+         color:#527fa3;
+    }
+
+    /*下载模板样式*/
+    .add_infor{
+        border-left:1px solid #d2d2d2;
+        border-top:1px solid #d2d2d2;
+        font-size:12px;
+    }
+    .add_infor td{
+        height:32px;
+        line-height:32px;
+        border-right:1px solid #d2d2d2;
+        border-left:1px solid #d2d2d2;
+        border-top:1px solid #d2d2d2;
+        border-bottom:1px solid #d2d2d2;
+        vertical-align:middle;
+        padding:5px;
+    }
+    .t_txt{ width:18%; background-color:#E6F1F4; font-weight:bold; text-align:right;}
+    .t_con{
+        width:32%;
+        padding-left:5px;
+    }
+
+    .datagrid-cell, .datagrid-cell-group, .datagrid-header-rownumber, .datagrid-cell-rownumber
+    {
+        text-overflow: ellipsis;
+    }
+</style>
+
+<body style="margin: 4px 0px 0px 14px;">
+<div class="navbarDiv">
+    <ul>
+        <li><a href="/index">生日推送</a></li>
+        <li><a href="/wxPushImport">微信通知</a></li>
+        <li><a href="/emailPushImport">邮件通知</a></li>
+        <li class="active" style="width: 338px"><a href="/sendMessage">通知统计</a></li>
+    </ul>
+</div>
+
+<div id="drawing">
+    <div class="circle" style="width: 150px; height: 150px; border-radius: 80px; left:100px; top: 50px;">
+        <div style="margin-left:27px;margin-top: 30px">
+            <span style="color: white;font-size: 20px">已发送邮件</span>
+        </div>
+
+        <div style="margin-top: 25px;margin-left: 54px">
+            <span id="sendedCount" style="color: white;font-size: 25px">0</span>
+        </div>
+    </div>
+
+    <div class="circle" style="width: 150px; height: 150px; border-radius: 80px; left:100px; top: 339px;">
+        <div style="margin-left:38px;margin-top: 30px">
+            <span style="color: white;font-size: 20px">短信剩余</span>
+        </div>
+
+          <div style="margin-top: 25px;margin-left: 62px">
+               <span id="balanceMessageCount" style="color: white;font-size: 25px">--</span>
+           </div>
+    </div>
+
+    <!--邮件导入部分 start-->
+    <div style="width: 1002px;height: 280px;margin-left: 336px;margin-top: 4px;">
+        <table id="emailManager" class="easyui-datagrid" style="width:100%;height:100%;"
+               url="/getAllByPage" method="post"
+               toolbar="#linkButton" singleSelect="true" pagination="true" rownumbers="true"   pageSize="4"  pageList="[4,8,12,16,20]"
+               title="邮件通知管理">
+            <thead>
+            <tr>
+                <th field="id" hidden="true" width="10%" align="center">ID</th>
+                <th field="postName" width="10%" align="center">姓名</th>
+                <th field="postEmail" width="20%" align="center">邮箱</th>
+                <th field="postTheme" width="30%" align="center">主题</th>
+                <th field="postArticle" width="42%" align="center">内容</th>
+            </tr>
+            </thead>
+        </table>
+        <div id="linkButton">
+            <a href="#" class="abutton"  style="background:   url('images/imp.png') 7px 5px no-repeat;background-color: #f2f4f5" plain="true" onclick="emailImport()">导入</a>
+            <a href="#" class="abutton"  style="float:right;background:   url('images/edit.png') 7px 5px no-repeat;" plain="true" onclick="editEmail(2)">修改</a>
+            <a href="#" class="abutton"  style="float:right;background:   url('images/add.png') 7px 5px no-repeat;margin-right: 2%" plain="true" onclick="editEmail(1)">新增</a>
+        </div>
+        <div id="dlg-buttons">
+          <a href="#" class="easyui-linkbutton" iconCls="icon-save" onclick="saveOrUpdateEmailTask()">保存</a>
+          <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#emailAddAndEdit').dialog('close')">取消</a>
+         </div>
+        <!--新增或修改-->
+        <div id="emailAddAndEdit" class="easyui-dialog" style="width:500px;height:350px;padding:10px 20px"
+             closed="true" buttons="#dlg-buttons">
+            <form id="ede">
+                <input name="id" type="hidden">
+                <div class="fitem">
+                    <i style="color:#FF0000" >*</i><label>邮箱:</label>
+                    <input type="text"  name="postEmail" class="input_txt w99" >
+                </div>
+                <div class="fitem">
+                    <i style="color:#FF0000" >*</i> <label>姓名:</label>
+                    <input type="text"  name="postName" class="input_txt w99"  >
+                </div>
+                <div class="fitem">
+                    <i style="color:#FF0000" >*</i> <label>主题:</label>
+                    <input type="text"  name="postTheme" class="input_txt w99"  >
+                </div>
+                <div class="fitem">
+                    <i style="color:#FF0000" >*</i><label>内容:</label>
+                    <textarea rows="3" cols="20" name="postArticle" style="border: 1px #d8d8d8 solid;vertical-align:top">
+
+                    </textarea>
+                </div>
+            </form>
+        </div>
+        <div id="dlg-batchEmail">
+            <a href="#" class="easyui-linkbutton" iconCls="icon-save" onclick="saveBatchEmail()">保存</a>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#emailImport').dialog('close')">取消</a>
+        </div>
+        <div id="emailImport" class="easyui-dialog" style="width:500px;height:230px;padding:10px 20px"
+             closed="true" buttons="#dlg-batchEmail">
+            <table class="add_infor" width="100%" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td class="t_txt">模板下载：</td>
+                    <td><a href="/getEmailImportTemplate?fileName=emailMessageImport.xlsx"
+                           style="color: darkturquoise;font-size: medium;font-style: italic;text-decoration: underline;">邮件通知导入统一模板</a></td>
+                </tr>
+                <tr>
+                    <td class="t_txt"><i style="color:#FF0000" >*</i>数据附件：</td>
+                    <td class="t_con">
+                        <form id="SEmailTaskImportData" action="" method="post" enctype="multipart/form-data">
+                          <input type="file" id="myfile" name="myfile" accept=".xlsx,.xls" />
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!--短信导入部分-->
+    <div style="width: 1002px;height: 286px;margin-left: 336px;margin-top: 4px;">
+        <table id="tt" class="easyui-datagrid" style="width:100%;height:100%;"
+               url="/getAllWaitingMessageByPage" method="post"
+               toolbar="#toolbar" singleSelect="true" pagination="true" rownumbers="true"  pageSize="4" pageList="[4,8,12,16,20]"
+               title="短信通知管理">
+            <thead>
+            <tr>
+                <th field="id" hidden="true" width="10%" align="center">ID</th>
+                <th field="postName" width="10%" align="center">姓名</th>
+                <th field="postNumber" width="20%" align="center">手机号码</th>
+                <th field="messageTemplateId" width="17%" align="center">使用的模板ID</th>
+                <th field="messageParams" width="55%" align="center">使用的短信模板中携带的参数(多参数以英文逗号分隔开)</th>
+            </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            <a href="#" class="abutton"  style="background:   url('./images/imp.png') 7px 5px no-repeat;background-color: #f2f4f5" plain="true" onclick="messageImport()">导入</a>
+            <a href="#" class="abutton"  style="float:right;background:   url('/images/edit.png') 7px 5px no-repeat;" plain="true" onclick="editMessage(2)">修改</a>
+            <a href="#" class="abutton"  style="float:right;background:   url('/images/add.png') 7px 5px no-repeat;margin-right: 2%" plain="true" onclick="editMessage(1)">新增</a>
+        </div>
+
+        <div id="dlg-message-buttons">
+            <a href="#" class="easyui-linkbutton" iconCls="icon-save" onclick="saveOrUpdateMessageTask()">保存</a>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#messageAddAndEdit').dialog('close')">取消</a>
+        </div>
+        <!--新增或修改-->
+        <div id="messageAddAndEdit" class="easyui-dialog" style="width:500px;height:350px;padding:10px 20px"
+             closed="true" buttons="#dlg-message-buttons">
+            <form id="eme">
+                <input name="id" type="hidden">
+                <div class="fitem">
+                    <i style="color:#FF0000" >*</i> <label>姓名:</label>
+                    <input type="text"  name="postName" class="input_txt w99"  >
+                </div>
+                <div class="fitem" style="margin-left: 25%;">
+                    <i style="color:#FF0000" >*</i><label>手机号码:</label>
+                    <input type="text"  name="postNumber" class="input_txt w99" >
+                </div>
+                <div class="fitem" style="margin-left: 17%;">
+                    <i style="color:#FF0000" >*</i> <label>使用的模板ID:</label>
+                    <input type="text"  name="messageTemplateId" class="input_txt w99"  >
+                </div>
+                <div class="fitem" style="margin-left: -4%;">
+                    <i style="color:#FF0000" >*</i> <label>使用的短信模板中携带的参数:</label>
+                    <input type="text"  name="messageParams" class="input_txt w99"  ></br>
+                    <label style="color: red;float: right">*多参数以英文逗号分隔开</label>
+                </div>
+            </form>
+        </div>
+
+        <!--短信批量页面-->
+        <div id="dlg-batchMessage">
+            <a href="#" class="easyui-linkbutton" iconCls="icon-save" onclick="saveBatchMessage()">保存</a>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#messageImport').dialog('close')">取消</a>
+        </div>
+        <div id="messageImport" class="easyui-dialog" style="width:500px;height:230px;padding:10px 20px"
+             closed="true" buttons="#dlg-batchMessage">
+            <table class="add_infor" width="100%" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td class="t_txt">模板下载：</td>
+                    <td><a href="/getMessageImportTemplate?fileName=messageImport.xlsx"
+                           style="color: darkturquoise;font-size: medium;font-style: italic;text-decoration: underline;">短信通知导入统一模板</a></td>
+                </tr>
+                <tr>
+                    <td class="t_txt"><i style="color:#FF0000" >*</i>数据附件：</td>
+                    <td class="t_con">
+                        <form id="SMessageTaskImportData" action="" method="post" enctype="multipart/form-data">
+                            <input type="file" id="messagesFile" name="myfile" accept=".xlsx,.xls" />
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+    </div>
+
+
+</div>
+<script>
+    /*获取已发送邮件数*/
+    var data={};
+    $.ajax({
+        type: "Get",
+        contentType: "application/json",
+        url: "/getSendedCount",
+        data: "",
+        dataType: 'json',
+        success: function (data) {
+            $('#sendedCount').html(data.sendedCount);
+        },
+        error: function (e) {
+          alert("异常")
+        }
+    });
+    /*获取剩余短信条数*/
+    $.ajax({
+        type: "Get",
+        contentType: "application/json",
+        url: "/getBalanceMessage",
+        data: "",
+        dataType: 'json',
+        success: function (data) {
+            if(data== null){
+            }else {
+                $('#balanceMessageCount').html(data);
+            }
+        },
+        error: function (e) {
+            alert("异常")
+        }
+    });
+
+
+    /*开启邮件通知新增和修改页面*/
+    function editEmail(i) {
+        if(i==1){
+            $('#ede')[0].reset();
+            $('#emailAddAndEdit').dialog('open').dialog('setTitle','邮件通知的新增/修改');
+        }else{
+            var row = $('#emailManager').datagrid('getSelected');
+            //弹框加载
+            if (row){
+                $('#emailAddAndEdit').dialog('open').dialog('setTitle','邮件通知的新增/修改');
+                $('#ede').form('load',row);
+            }else{
+                alert("请选择一条记录");
+            }
+        }
+    }
+
+    /*提交邮件通知新增和修改*/
+    function saveOrUpdateEmailTask(){
+        $.ajax({
+            type: "POST",
+            url: "/saveOrUpdateEmailTask" ,
+            data: $('#ede').serializeArray(),
+            success: function (result) {
+                $('#ede')[0].reset();
+                $('#emailAddAndEdit').dialog('close')
+                $('#emailManager').datagrid('reload');
+//                console.log(result);//打印服务端返回的数据(调试用)
+//                if (result.resultCode == 200) {
+//                    alert("SUCCESS");
+//                } ;
+            },
+            error : function() {
+                alert("异常！");
+            }
+        });
+    }
+
+   /* 开启批量导入界面*/
+    function emailImport() {
+        $('#emailImport').dialog('open').dialog('setTitle','邮件通知批量导入');
+    }
+
+    function saveBatchEmail(){
+        var type = "myfile";          //后台接收时需要的参数名称，自定义即可
+        var id = "myfile";            //即input的id，用来寻找值
+        var formData = new FormData();
+        formData.append(type, $("#"+id)[0].files[0]);    //生成一对表单属性
+        $.ajax({
+            type: "POST",           //因为是传输文件，所以必须是post
+            url: '/sEmailTaskExcelImport',         //对应的后台处理类的地址
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                $('#SEmailTaskImportData')[0].reset();
+                $('#emailImport').dialog('close');
+                $('#emailManager').datagrid('reload');
+            }
+        });
+    }
+/***********************************************************************************************************/
+    /* 开启短信批量导入界面*/
+    function messageImport(){
+        $('#messageImport').dialog('open').dialog('setTitle','短信通知批量导入');
+    }
+
+    function saveBatchMessage(){
+        var type = "myfile";          //后台接收时需要的参数名称，自定义即可
+        var id = "messagesFile";            //即input的id，用来寻找值
+        var formData = new FormData();
+        formData.append(type, $("#"+id)[0].files[0]);    //生成一对表单属性
+        $.ajax({
+            type: "POST",           //因为是传输文件，所以必须是post
+            url: '/sMessageTaskExcelImport',         //对应的后台处理类的地址
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                $('#SMessageTaskImportData')[0].reset();
+                $('#messageImport').dialog('close');
+                $('#tt').datagrid('reload');
+            }
+        });
+    }
+
+    /*开启短信修改或新增页面*/
+    function editMessage(i) {
+        if(i==1){
+            $('#eme')[0].reset();
+            $('#messageAddAndEdit').dialog('open').dialog('setTitle','短信通知的新增/修改');
+        }else{
+            var row = $('#tt').datagrid('getSelected');
+            //弹框加载
+            if (row){
+                $('#messageAddAndEdit').dialog('open').dialog('setTitle','短信通知的新增/修改');
+                $('#eme').form('load',row);
+            }else{
+                alert("请选择一条记录");
+            }
+        }
+    }
+
+    /*提交邮件通知新增和修改*/
+    function saveOrUpdateMessageTask(){
+        $.ajax({
+            type: "POST",
+            url: "/saveOrUpdateMessageTask" ,
+            data: $('#eme').serializeArray(),
+            success: function (result) {
+                $('#eme')[0].reset();
+                $('#messageAddAndEdit').dialog('close')
+                $('#tt').datagrid('reload');
+            },
+            error : function() {
+                alert("异常！");
+            }
+        });
+    }
+
+</script>
+</body>
+</html>
