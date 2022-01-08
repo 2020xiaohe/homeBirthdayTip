@@ -38,7 +38,7 @@ public class ReportSystemStatusJobDetail implements Job {
         CCommonPush s = new CCommonPush();
         s.setPushTemplateId(Constants.DX_TEMPLATE_ENUM.tshb.getIndex());
         s.setPushTemplateParams(params);
-        s.setPushAccount(Constants.COUNTRY_CODE+telPhoneNum);
+        s.setPushAccount(telPhoneNum);
         s.setPushAccountName("何茂彬");
         s.setPushType(Constants.SERVICE_TYPE.dx.getIndex());
         s.setPushStatus(Constants.PUSH_STATUS.ddfs.getIndex());
