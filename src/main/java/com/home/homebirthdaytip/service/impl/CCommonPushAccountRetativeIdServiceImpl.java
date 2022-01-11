@@ -103,6 +103,11 @@ public class CCommonPushAccountRetativeIdServiceImpl extends ServiceImpl<CCommon
         }
         return result;
     }
+
+    @Override
+    public CCommonPushAccountRetativeId getIdByEmailAccount(String account) {
+        return cCommonPushAccountRetativeIdMapper.selectOneByEmailaccount(account);
+    }
 }
 
 

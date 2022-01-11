@@ -11,6 +11,7 @@ import com.home.homebirthdaytip.common.utils.threads.SendSms;
 import com.home.homebirthdaytip.domain.CCommonPush;
 import com.home.homebirthdaytip.domain.CCommonPushUsers;
 import com.home.homebirthdaytip.mapper.CCommonPushMapper;
+import com.home.homebirthdaytip.service.CCommonPushAccountRetativeIdService;
 import com.home.homebirthdaytip.service.CCommonPushService;
 import com.home.homebirthdaytip.service.CCommonPushUsersService;
 import me.chanjar.weixin.mp.api.WxMpService;
@@ -18,7 +19,10 @@ import me.chanjar.weixin.mp.bean.template.WxMpTemplateData;
 import me.chanjar.weixin.mp.bean.template.WxMpTemplateMessage;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,6 +101,8 @@ public class CCommonPushServiceImpl extends ServiceImpl<CCommonPushMapper, CComm
     private CCommonPushService cCommonPushService;
     @Autowired
     private CCommonPushUsersService cCommonPushUsersService;
+    @Autowired
+    private CCommonPushAccountRetativeIdService cCommonPushAccountRetativeIdService;
 
     @Override
     public void sendHtmlMail(String threadName, Integer id) {
@@ -462,6 +468,8 @@ public class CCommonPushServiceImpl extends ServiceImpl<CCommonPushMapper, CComm
                 Row row = sheet.createRow(i+2);
                 row.createCell(0).setCellValue(c.getName());
                 row.createCell(1).setCellValue(c.getAccount());
+//                CCommonPushAccountRetativeId cre = cCommonPushAccountRetativeIdService.getIdByEmailAccount(c.getId());
+//                row.createCell(2).setCellValue(cre.getId());
             }
         }
         Sheet sheet1 = workbook.getSheetAt(1);

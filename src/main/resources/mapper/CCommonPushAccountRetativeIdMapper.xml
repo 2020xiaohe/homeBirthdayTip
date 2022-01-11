@@ -13,4 +13,11 @@
     <sql id="Base_Column_List">
         id,emailAccount,messageAccount
     </sql>
+    <select id="selectOneByEmailaccount" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from c_common_push_account_retative_id
+        where
+        emailAccount = #{emailaccount,jdbcType=VARCHAR}
+    </select>
 </mapper>

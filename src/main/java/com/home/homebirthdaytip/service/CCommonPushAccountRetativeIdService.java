@@ -11,4 +11,6 @@ public interface CCommonPushAccountRetativeIdService extends IService<CCommonPus
     CCommonPushAccountRetativeId getSubscribeInitStatus(String accountRetativeId);
 
     Boolean updateSubscribeStatus(CCommonPushAccountRetativeId c);
+
+    CCommonPushAccountRetativeId getIdByEmailAccount(String account);
 }
