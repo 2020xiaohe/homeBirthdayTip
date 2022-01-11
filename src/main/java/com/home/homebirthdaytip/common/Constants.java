@@ -50,6 +50,37 @@ public class Constants {
         }
     }
 
+    public enum WEATHER_ENABLE {
+        delete(0,"禁用"), normal(1, "启用");
+
+        private Integer index;
+        private String name;
+
+        // 构造方法
+        WEATHER_ENABLE(Integer index, String name) {
+            this.name = name;
+            this.index = index;
+        }
+
+        // get set 方法
+        public String getName() {
+            return name;
+        }
+
+        public Integer getIndex() {
+            return index;
+        }
+
+        public static String getNameByIndex(Integer index) {
+            for (WEATHER_ENABLE type : WEATHER_ENABLE.values()) {
+                if (type.getIndex().equals(index)) {
+                    return type.getName();
+                }
+            }
+            return null;
+        }
+    }
+
     /**
      * 年度生日是否已经推送
      */

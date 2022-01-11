@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>小何之家</title>
+    <link rel="stylesheet" href="/css/weui-2.5.4/dist/style/weui.min.css">
+    <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<div class="page">
+    <div class="weui-form">
+        <div class="weui-form__text-area">
+            <h2 class="weui-form__title">小何之家推送的订阅与取消</h2>
+        </div>
+        <div class="weui-form__control-area">
+            <div class="weui-cells__group weui-cells__group_form">
+                <div class="weui-cells">
+                    <label for="messagePush" class="weui-cell weui-cell_active weui-cell_switch">
+                        <div class="weui-cell__bd" id="messagePush_txt" aria-hidden="true">短信推送</div>
+                        <div class="weui-cell__ft">
+                    <span class="weui-switch-cp">
+                        <input id="messagePush" aria-labelledby="cp_txt" class="weui-switch-cp__input" type="checkbox"
+                               checked="checked"/>
+                        <div class="weui-switch-cp__box"></div>
+                    </span>
+                        </div>
+                    </label>
+                    <label for="emailPush" class="weui-cell weui-cell_active weui-cell_switch">
+                        <div class="weui-cell__bd" id="cp_txt" aria-hidden="true">邮件推送</div>
+                        <div class="weui-cell__ft">
+                    <span class="weui-switch-cp">
+                        <input id="emailPush"  aria-labelledby="emailPush_txt" class="weui-switch-cp__input" type="checkbox"
+                               checked="checked"/>
+                        <div class="weui-switch-cp__box"></div>
+                    </span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="weui-form__opr-area">
+            <a role="button"  class="weui-btn weui-btn_primary" href="javascript:" id="showTooltips">确定</a>
+        </div>
+    </div>
+    <div id="js_toast" style="display: none;" role="alert">
+        <div class="weui-mask_transparent"></div>
+        <div class="weui-toast">
+            <i class="weui-icon-success-no-circle weui-icon_toast"></i>
+            <p id="successContent" class="weui-toast__content">已完成</p>
+        </div>
+    </div>
+    <div role="alert" id="warnToast" style="display: none;">
+        <div class="weui-mask_transparent"></div>
+        <div class="weui-toast">
+            <i  class="weui-icon-warn weui-icon_toast"></i>
+            <p id="warnContent" class="weui-toast__content">操作失败</p>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript" type="text/javascript">
+    var handSubmit = true;
+    $(function () {
+        var $tooltips = $('.js_tooltips');
+        var $showTooltips =$('#showTooltips');
+        //初始化当前用户系统订阅状态
+        initNeedPushStatus();
+        //保存用户订阅意愿
+        $('#showTooltips').on('click', function () {
+            if(handSubmit){
+                $showTooltips.attr('disabled',true)
+                handSubmit =false;
+                var messageSubscribeStatus = 0
+                var emailSubscribeStatus = 0
+
+                if($("#messagePush").prop("checked")){
+                    messageSubscribeStatus = 1
+                }
+                if($("#emailPush").prop("checked")){
+                    emailSubscribeStatus = 1
+                }
+                console.log("短信推送订阅状态",messageSubscribeStatus)
+                console.log("邮件推送订阅状态",emailSubscribeStatus)
+                $.ajax({
+                    type: "POST",
+                    url: "/api/subscribe/updateSubscribeStatus" ,
+                    data:  {
+                        id: [[${id }]],
+                        emailSubscribeStatus:emailSubscribeStatus,
+                        messageSubscribeStatus: messageSubscribeStatus
+                    },
+                    dataType: "json",
+                    success: function (result) {
+                        if(result){
+                            successTip("已成功更新订阅状态");
+                        }else{
+                            warnTip("更新订阅状态失败")
+                        }
+
+                    },
+                    error : function(data,type, err) {
+                        alert("异常！");
+                        console.log(err);
+                    }
+                });
+            }
+        });
+    });
+
+    function initNeedPushStatus() {
+        $.ajax({
+            type: "POST",
+            url: "/api/subscribe/getSubscribeInitStatus" ,
+            data:  {
+                accountRetativeId: [[${id }]]
+            },
+            dataType: "json",
+            success: function (result) {
+                if(result.emailSubscribeStatus == 1){
+                    $('#emailPush').prop('checked', true)
+                }else if(result.emailSubscribeStatus == 0){
+                    $('#emailPush').prop('checked', false)
+                }else {
+                    $('#emailPush').prop('checked', false)
+                    $('#emailPush').prop('disabled', true)
+                }
+                if(result.messageSubscribeStatus == 1){
+                    $('#messagePush').prop('checked', true)
+                }else if(result.messageSubscribeStatus == 0){
+                    $('#messagePush').prop('checked', false)
+                }else {
+                    $('#messagePush').prop('checked', false)
+                    $('#messagePush').prop('disabled', true)
+                }
+            },
+            error : function(data,type, err) {
+                alert("异常！");
+                console.log(err);
+            }
+        });
+    }
+
+    function successTip(val) {
+        var $toast = $('#js_toast');
+        if(val != null && val != undefined){
+            $('#successContent').html(val);
+        }
+        $toast.fadeIn(100);
+        $toast.attr('aria-live', 'assertive');
+        setTimeout(function () {
+            $toast.fadeOut(100);
+            $toast.attr('aria-live', 'off');
+        }, 2000);
+    }
+
+    function warnTip(val){
+        var $warnToast = $('#warnToast');
+        var $warnContent =$('#warnContent');
+        $warnContent.html(val);
+        $warnToast.fadeIn(100);
+        $warnToast.attr('aria-live', 'assertive');
+        setTimeout(function () {
+            $warnToast.fadeOut(100);
+            $warnToast.attr('aria-live', 'off');
+        }, 2000);
+    }
+</script>
+</body>
+</html>

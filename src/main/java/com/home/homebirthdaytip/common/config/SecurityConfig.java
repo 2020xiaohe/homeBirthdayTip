@@ -36,6 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()    //认证请求
                 .antMatchers("/login", "/doLogin","/wxLogin"
                         ,"/checkUserName","/regist","/doRegister"
+                        ,"/api/subscribe/**"
                         ,"/api/weChat/**"   //来自微信小程序的免登录验证
                         ,"/outAllFileMessage","/getImageByPath"
                         ,"/favicon.ico","/css/**","/js/**","/images/**"
